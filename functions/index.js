@@ -105,3 +105,12 @@ exports.storeImage = functions.https.onRequest((req, res) => {
         return busboy.end(req.rawBody);
     });
 });
+
+exports.deleteImages = functions.database.ref('/products/{productId}').onDelete(
+    snapshot => {
+        const imageData = snapshot.val();
+        const imagePath = imageData.imagePath;
+        const bucket = gcs.bucket('kamagera-aa372.appspot.com');
+        return bucket.file(imagePath).delete();
+    }
+);
